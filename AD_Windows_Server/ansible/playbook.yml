@@ -1,0 +1,47 @@
+---
+- name: Configure AD on Windows Server
+  hosts: windows
+  tasks:
+    - name: Install ADDS Role
+      win_feature:
+        name: AD-Domain-Services
+        state: present
+
+    - name: Install ADDS Forest
+      win_domain:
+        dns_domain_name: example.com
+        domain_netbios_name: EXAMPLE
+        domain_mode: Win2012R2
+        forest_mode: Win2012R2
+        install_dns: yes
+      become: yes
+      become_method: runas
+
+## 2. Configuration des comptes Active Directory:
+
+- Après avoir configuré AD, ajoutez les tâches suivantes à votre playbook pour créer trois comptes utilisateur :
+
+```yaml
+    - name: Create User 1
+      win_domain_user:
+        name: user1
+        password: User1Password!
+        state: present
+        groups:
+          - Domain Users
+
+    - name: Create User 2
+      win_domain_user:
+        name: user2
+        password: User2Password!
+        state: present
+        groups:
+          - Domain Users
+
+    - name: Create User 3
+      win_domain_user:
+        name: user3
+        password: User3Password!
+        state: present
+        groups:
+          - Domain Users
