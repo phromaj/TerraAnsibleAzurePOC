@@ -1,29 +1,33 @@
 ---
-  - name: Install and Configure AD DS
+- name: Install and Configure AD DS
   hosts: windows
   gather_facts: no
   tasks:
     - name: Install AD DS Role
-      win_feature:
+      ansible.windows.win_feature:
         name: AD-Domain-Services
         state: present
         include_management_tools: true
 
     - name: Promote server to domain controller
-      win_domain_controller:
+      ansible.windows.win_domain_controller:
         dns_domain_name: "example.com"
         domain_admin_user: "{{ ansible_user }}"
         domain_admin_password: "{{ ansible_password }}"
         safe_mode_admin_password: "SafePassword123!"
         state: domain_controller
 
-win_domain_user:
+    - name: Create AD Users
+      ansible.windows.win_domain_user:
         name: "{{ item.name }}"
         password: "{{ item.password }}"
         state: present
         user_cannot_change_password: yes
         password_never_expires: yes
       loop:
-        - { name: 'user1', password: 'Password123!' }
-        - { name: 'user2', password: 'Password123!' }
-        - { name: 'user3', password: 'Password123!' }
+        - name: 'user1'
+          password: 'Password123!'
+        - name: 'user2'
+          password: 'Password123!'
+        - name: 'user3'
+          password: 'Password123!'
