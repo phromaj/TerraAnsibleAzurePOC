@@ -1,4 +1,3 @@
-output "vm_public_ip" {
-  description = "Public IP address of the VM"
-  value       = azurerm_virtual_machine.vm.ip_address
+output "windows_vm_private_ip" {
+  value = azurerm_windows_virtual_machine.vm.private_ip_address
 }

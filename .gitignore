@@ -15,6 +15,7 @@ crash.log
 .secret # Ansible Vault password files
 *.vault # Encrypted Ansible files
 ansible.cfg # Personal Ansible configuration files
+vars/secret.yml # Personal Ansible configuration files
 
 # Additional common ignores
 .DS_Store

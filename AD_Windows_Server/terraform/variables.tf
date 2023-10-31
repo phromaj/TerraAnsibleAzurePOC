@@ -1,22 +1,14 @@
-variable "resource_group_name" {
-  description = "Nom du groupe de ressources"
-  default     = "ad-resource-group"
-}
-
 variable "location" {
-  description = "Région Azure"
-  default     = "francecentral"
+  description = "Azure region where all resources in this example should be created."
+  default     = "East US"
 }
 
-variable "vm_name" {
-  description = "Nom de la VM"
-  default     = "ad-vm"
-}
-
-variable "admin_username" {
-  description = "Nom d'utilisateur administrateur de la VM"
+variable "resource_group_name" {
+  description = "Name of the resource group"
+  default     = "resource_group"
 }
 
 variable "admin_password" {
-  description = "Mot de passe administrateur de la VM"
+  description = "Admin password for the Windows VM"
+  type        = string
 }

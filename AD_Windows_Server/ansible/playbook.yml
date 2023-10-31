@@ -1,47 +1,29 @@
 ---
-- name: Configure AD on Windows Server
+  - name: Install and Configure AD DS
   hosts: windows
+  gather_facts: no
   tasks:
-    - name: Install ADDS Role
+    - name: Install AD DS Role
       win_feature:
         name: AD-Domain-Services
         state: present
+        include_management_tools: true
 
-    - name: Install ADDS Forest
-      win_domain:
-        dns_domain_name: example.com
-        domain_netbios_name: EXAMPLE
-        domain_mode: Win2012R2
-        forest_mode: Win2012R2
-        install_dns: yes
-      become: yes
-      become_method: runas
+    - name: Promote server to domain controller
+      win_domain_controller:
+        dns_domain_name: "example.com"
+        domain_admin_user: "{{ ansible_user }}"
+        domain_admin_password: "{{ ansible_password }}"
+        safe_mode_admin_password: "SafePassword123!"
+        state: domain_controller
 
-## 2. Configuration des comptes Active Directory:
-
-- Après avoir configuré AD, ajoutez les tâches suivantes à votre playbook pour créer trois comptes utilisateur :
-
-```yaml
-    - name: Create User 1
-      win_domain_user:
-        name: user1
-        password: User1Password!
+win_domain_user:
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
         state: present
-        groups:
-          - Domain Users
-
-    - name: Create User 2
-      win_domain_user:
-        name: user2
-        password: User2Password!
-        state: present
-        groups:
-          - Domain Users
-
-    - name: Create User 3
-      win_domain_user:
-        name: user3
-        password: User3Password!
-        state: present
-        groups:
-          - Domain Users
+        user_cannot_change_password: yes
+        password_never_expires: yes
+      loop:
+        - { name: 'user1', password: 'Password123!' }
+        - { name: 'user2', password: 'Password123!' }
+        - { name: 'user3', password: 'Password123!' }
