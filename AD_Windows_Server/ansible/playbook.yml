@@ -2,6 +2,8 @@
 - name: Install and Configure AD DS
   hosts: windows
   gather_facts: no
+  vars_files:
+  - vars/secret.yml
   tasks:
     - name: Install AD DS Role
       ansible.windows.win_feature:
