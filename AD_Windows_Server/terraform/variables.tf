@@ -5,20 +5,10 @@ variable "location" {
 
 variable "resource_group_name" {
   description = "Name of the resource group"
-  default     = "resource_group"
+  default     = "ad_windows"
 }
 
 variable "admin_password" {
   description = "Admin password for the Windows VM"
   type        = string
 }
-
-# variable "subscription_id" {
-#   type        = string
-#   sensitive   = true
-# }
-
-# variable "tenant_id" {
-#   type        = string
-#   sensitive   = true
-# }

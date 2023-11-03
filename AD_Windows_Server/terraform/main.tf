@@ -25,7 +25,7 @@ resource "azurerm_public_ip" "vm_pubip" {
   name                = "vm-pubip"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 }
 
 # Create a Network Interface with the Public IP Address
@@ -42,19 +42,13 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# Create a Network Security Group
-resource "azurerm_network_security_group" "nsg" {
-  name                = "nsg"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-# Create a Security Rule to allow RDP access
+# Create a Network Security Group with Security Rules
 resource "azurerm_network_security_group" "networkSecurityGroup" {
   name                = "networkSecurityGroup"
-  location            = azurerm_resource_group.myResourceGroup.location
-  resource_group_name = azurerm_resource_group.myResourceGroup.name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
 
+  # Security Rule for RDP Access
   security_rule {
     name                       = "allow_rdp"
     priority                   = 1001
@@ -67,6 +61,7 @@ resource "azurerm_network_security_group" "networkSecurityGroup" {
     destination_address_prefix = "*"
   }
 
+  # Security Rule for Web Traffic
   security_rule {
     name                       = "allow_web_traffic"
     priority                   = 1002
@@ -79,6 +74,7 @@ resource "azurerm_network_security_group" "networkSecurityGroup" {
     destination_address_prefix = "*"
   }
 
+  # Security Rule for PowerShell Remoting
   security_rule {
     name                       = "allow_powershell_remoting"
     priority                   = 1003
@@ -93,9 +89,9 @@ resource "azurerm_network_security_group" "networkSecurityGroup" {
 }
 
 # Associate the Network Security Group with the Network Interface
-resource "azurerm_network_interface_security_group_association" "example" {
+resource "azurerm_network_interface_security_group_association" "nic_nsg_association" {
   network_interface_id      = azurerm_network_interface.nic.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  network_security_group_id = azurerm_network_security_group.networkSecurityGroup.id
 }
 
 # Create a Windows Virtual Machine
@@ -111,7 +107,8 @@ resource "azurerm_windows_virtual_machine" "vm" {
   ]
 
   os_disk {
-    caching              = "ReadWrite"
+    name              = "osdisk"
+    caching           = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
 
@@ -126,20 +123,16 @@ resource "azurerm_windows_virtual_machine" "vm" {
 # Enable WinRM
 resource "azurerm_virtual_machine_extension" "winrm-extension" {
   name                 = "winrm-extension"
-  virtual_machine_id   = azurerm_windows_virtual_machine.win-vm.id
+  virtual_machine_id   = azurerm_windows_virtual_machine.vm.id
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
   type_handler_version = "1.9"
 
-  settings = <<SETTINGS
-  {
+  settings = jsonencode({
     "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1"
-  }
-SETTINGS
+  })
 
-  protected_settings = <<PROTECTED_SETTINGS
-  {
+  protected_settings = jsonencode({
     "fileUris": ["https://raw.githubusercontent.com/ansible/ansible-documentation/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"]
-  }
-PROTECTED_SETTINGS
+  })
 }
