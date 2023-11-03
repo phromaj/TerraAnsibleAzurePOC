@@ -13,12 +13,12 @@ variable "admin_password" {
   type        = string
 }
 
-variable "subscription_id" {
-  type        = string
-  sensitive   = true
-}
+# variable "subscription_id" {
+#   type        = string
+#   sensitive   = true
+# }
 
-variable "tenant_id" {
-  type        = string
-  sensitive   = true
-}
+# variable "tenant_id" {
+#   type        = string
+#   sensitive   = true
+# }
