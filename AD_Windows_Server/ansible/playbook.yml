@@ -1,10 +1,10 @@
 ---
 - name: Install and Configure AD DS
   hosts: windows
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Install AD DS Role
-      win_feature:
+      ansible.windows.win_feature:
         name: AD-Domain-Services
         state: present
         include_management_tools: true
@@ -24,8 +24,8 @@
         name: "{{ item.name }}"
         password: "{{ item.password }}"
         state: present
-        user_cannot_change_password: yes
-        password_never_expires: yes
+        user_cannot_change_password: true
+        password_never_expires: true
       loop:
         - name: 'user1'
           password: 'Password123!'
