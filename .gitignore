@@ -24,3 +24,4 @@ vars/secret.yml # Personal Ansible configuration files
 *.save
 *.old
 .vscode/
+diff_output.txt

@@ -22,3 +22,21 @@ variable "subnet_name" {
   description = "The name of the existing subnet"
   type        = string
 }
+
+variable "ad_users" {
+  description = "List of AD users"
+  default = [
+    {
+      name = "user1",
+      password = "Password123!"
+    },
+    {
+      name = "user2",
+      password = "Password123!"
+    },
+    {
+      name = "user3",
+      password = "Password123!"
+    }
+  ]
+}
