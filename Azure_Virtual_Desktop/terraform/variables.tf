@@ -2,10 +2,6 @@ variable "location" {
   description = "Azure region where all resources in this example should be created."
   default     = "East US"
 }
-variable "location" {
-  description = "Azure region where all resources in this example should be created."
-  default     = "East US"
-}
 
 variable "resource_group_name" {
   description = "Name of the resource group"
@@ -53,7 +49,7 @@ variable "vm_size" {
 
 variable "image_offer" {
   description = "The offer of the image used for the VMs"
-  default     = "Windows-10"
+  default     = "windows-11"
 }
 
 variable "image_publisher" {
@@ -63,12 +59,12 @@ variable "image_publisher" {
 
 variable "image_sku" {
   description = "The SKU of the image used for the VMs"
-  default     = "19h1-evd"
+  default     = "win11-23h2-avd"
 }
 
 variable "image_version" {
   description = "The version of the image used for the VMs"
-  default     = "latest"
+  default     = "22631.2715.231109"
 }
 
 variable "admin_username" {
